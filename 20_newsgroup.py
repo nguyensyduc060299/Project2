@@ -77,7 +77,7 @@ def get_if_idf(datapath):
     for doc in docs:
         label, doc_id, text = doc
         words = [word for word in text.split() if word in idfs]
-        word_set = list(set(word))
+        word_set = list(set(words))
         max_freq = max([words.count(word) for word in word_set])
         words_if_idfs = []
         for word in word_set:
