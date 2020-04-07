@@ -4,6 +4,7 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from collections import defaultdict
+import numpy as np
 
 def collect_data():
     path = 'E:\\20192\\Project 2\\20news-bydate\\20news-bydate-train'
@@ -56,8 +57,7 @@ def get_if_idf(datapath):
         for word in words:
             doc_count[word] += 1
 
-    vocal_idfs = [(word, cal_idf(df, corpus_size)) for word, df in zip(doc_count.keys(),
-                  doc_count.values()) if df > 10]
+    vocal_idfs = [(word, cal_idf(df, corpus_size)) for word, df in doc_count.items() if df > 10]
 
     print('Vocalbulary size : {}'.format(len(vocal_idfs)))
 
