@@ -86,7 +86,7 @@ def get_if_idf(datapath):
             words_if_idfs.append(str(word_IDs[word])+":"+str(if_idf_value))
 
         rep = ' '.join(words_if_idfs)
-         tf_idf.append(label+"<fff>"+doc_id+"<fff>"+rep)
+        tf_idf.append(str(label)+"<fff>"+str(doc_id)+"<fff>"+rep)
 
     with open('E:\\20192\\Project 2\\20news-bydate\\result\\vector.txt', 'w') as f:
         f.write('\n'.join(tf_idf))
