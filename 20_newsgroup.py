@@ -83,7 +83,7 @@ def get_if_idf(datapath):
         for word in word_set:
             freq = words.count(word)
             if_idf_value = freq *1. / max_freq * idfs[word]
-            words_if_idfs.append((word_IDs[word],if_idf_value))
+            words_if_idfs.append(str(word_IDs[word])+":"+str(if_idf_value))
 
         rep = ' '.join(words_if_idfs)
         tf_idf.append(label, doc_id, rep)
