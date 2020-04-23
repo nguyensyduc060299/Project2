@@ -39,7 +39,7 @@ def logistic_regression():
     number_atr = docs_train_vector.shape[0]
     number_doc = docs_train_vector.shape[1]
     w = np.array([])
-    max_count = 500
+    max_count = 100
     learning_rate = 0.05
     tol = 1e-4
     check_w_after = 10
@@ -89,10 +89,11 @@ def logistic_regression():
     for i in range(number_doc):
         if labels_trained[i] == Y[i]:
             cnt_label +=1
-    print("Train: "+cnt_label/number_doc)
+    print("Train: "+str(cnt_label/number_doc))
 
+    number_doc_test = docs_test_vector.shape[1]
     labels_tested = []
-    for i in range(number_doc):
+    for i in range(number_doc_test):
         xi = docs_test_vector[:, i].reshape(number_atr, 1)
         y_pre = sigmoid(np.dot(w, xi))
         tmp = 0
@@ -104,12 +105,12 @@ def logistic_regression():
         labels_tested.append(max_label)
     cnt_label_test = 0
     Y_test = []
-    for c in range(number_doc):
+    for c in range(number_doc_test):
         Y_test.append(int(labels_test[c]))
     for i in range(number_doc):
         if labels_tested[i] == Y_test[i]:
             cnt_label_test += 1
-    print("Test: " + cnt_label_test / number_doc)
+    print("Test: " + str(cnt_label_test / number_doc_test))
 
 #------------------------
 logistic_regression()
