@@ -21,13 +21,16 @@ def logistic_regression():
         docs_test.append(line.split('<fff>')[2])
 
     #transform data---------------------------------
-    tf_idfs = TfidfVectorizer(min_df=10)
+    tf_idfs = TfidfVectorizer(min_df=6)
     docs_train_vector = tf_idfs.fit_transform(docs_train)
-    docs_train_vector = docs_train_vector.T
     docs_test_vector = tf_idfs.transform(docs_test)
-    #train_vector = np.concatenate((np.ones((1, docs_train_vector.shape[1])), docs_train_vector), axis = 1)
+
 
     #loss function------------------------------------------------
+    docs_train_vector = docs_train_vector.toarray()
+    docs_train_vector = docs_train_vector.T
+    docs_test_vector = docs_test_vector.toarray()
+    docs_test_vector = docs_test_vector.T
     def sigmoid(s):
         return 1/(1+np.exp(-s))
 
@@ -35,9 +38,8 @@ def logistic_regression():
     number_label = len(list_label)
     number_atr = docs_train_vector.shape[0]
     number_doc = docs_train_vector.shape[1]
-    w_init = np.random.randn(number_atr, number_label)
     w = np.array([])
-    max_count = 10000
+    max_count = 500
     learning_rate = 0.05
     tol = 1e-4
     check_w_after = 10
@@ -49,43 +51,65 @@ def logistic_regression():
                 Y.append(1)
             else:
                 Y.append(0)
-        wi = w_init[:,label].reshape(number_atr,1)
+        wi = np.random.randn(number_atr,1)
         while count < max_count:
             index = np.random.permutation(number_doc)
             for i in index:
-                xi = docs_train_vector[:,i].reshape(number_atr,1).toarray()
+                xi = docs_train_vector[:,i].reshape(number_atr,1)
                 yi = Y[i]
                 z = np.dot(wi.T,xi)
                 zi = sigmoid(z)
                 w_new = wi - learning_rate*(zi-yi)*xi
-                count +=1
-
                 if count % check_w_after == 0:
                     if np.linalg.norm(w_new - wi) < tol:
-                        wi = copy.deepcopy(w_new)
-                        break
+                       wi = copy.deepcopy(w_new)
+                    break
                 wi = copy.deepcopy(w_new)
+            count += 1
+        wi = wi.reshape(1,number_atr)
         w = np.append(w,[wi])
-    w = w.reshape(number_atr, number_label, order='F')
+    w = w.reshape(number_label,number_atr)
 
     #trainning------------------------------------------------------------
     labels_trained = []
     for i in range(number_doc):
-        xi = docs_train_vector[:,i].reshape(number_atr,1).toarray()
-        y_pre = sigmoid(np.dot(w.T,xi))
-        tmp = -1
+        xi = docs_train_vector[:,i].reshape(number_atr,1)
+        y_pre = sigmoid(np.dot(w,xi))
+        tmp = 0
         max_label = 0
         for index in range(number_label):
-            if xcc[index] > tmp:
+            if y_pre[index] > tmp:
                 tmp = y_pre[index]
                 max_label = index
-
         labels_trained.append(max_label)
     cnt_label = 0
+    Y=[]
+    for c in range(number_doc):
+        Y.append(int(labels_train[c]))
     for i in range(number_doc):
-        if str(labels_trained[i]) == labels_train[i]:
+        if labels_trained[i] == Y[i]:
             cnt_label +=1
-    print(cnt_label/number_doc)
+    print("Train: "+cnt_label/number_doc)
+
+    labels_tested = []
+    for i in range(number_doc):
+        xi = docs_test_vector[:, i].reshape(number_atr, 1)
+        y_pre = sigmoid(np.dot(w, xi))
+        tmp = 0
+        max_label = 0
+        for index in range(number_label):
+            if y_pre[index] > tmp:
+                tmp = y_pre[index]
+                max_label = index
+        labels_tested.append(max_label)
+    cnt_label_test = 0
+    Y_test = []
+    for c in range(number_doc):
+        Y_test.append(int(labels_test[c]))
+    for i in range(number_doc):
+        if labels_tested[i] == Y_test[i]:
+            cnt_label_test += 1
+    print("Test: " + cnt_label_test / number_doc)
 
 #------------------------
 logistic_regression()
