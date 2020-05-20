@@ -58,7 +58,7 @@ def runNN():
     hidden_dim = 50
     model_ANN = Neural_Network(input_dim, hidden_dim, output_dim)
     loss_fc = nn.CrossEntropyLoss()
-    learning_rate = 0.1
+    learning_rate = 0.01
     optimizer = torch.optim.SGD(model_ANN.parameters(), learning_rate)
     for epoch in range(10000):
         output = model_ANN(docs_vector_train)
